@@ -1,0 +1,20 @@
+digraph
+{ 
+rankdir=HR;
+
+node0x7ffd2b46f5a0 [ shape=record, rank = 1, label= "{ 0x7ffd2b46f5a0 | data = 50 | {<n0x7ffd2b46f5a0_l> left | <n0x7ffd2b46f5a0_r> right}} " ];
+node0x7ffd2b46f520 [ shape=record, rank = 2, label= "{ 0x7ffd2b46f520 | data = 65 | {<n0x7ffd2b46f520_l> left | <n0x7ffd2b46f520_r> right}} " ];
+node0x7ffd2b46f540 [ shape=record, rank = 3, label= "{ 0x7ffd2b46f540 | data = 80 | {<n0x7ffd2b46f540_l> left | <n0x7ffd2b46f540_r> right}} " ];
+node0x7ffd2b46f560 [ shape=record, rank = 4, label= "{ 0x7ffd2b46f560 | data = 30 | {<n0x7ffd2b46f560_l> left | <n0x7ffd2b46f560_r> right}} " ];
+node0x7ffd2b46f580 [ shape=record, rank = 5, label= "{ 0x7ffd2b46f580 | data = 70 | {<n0x7ffd2b46f580_l> left | <n0x7ffd2b46f580_r> right}} " ];
+node0x7ffd2b46f500 [ shape=record, rank = 6, label= "{ 0x7ffd2b46f500 | data = 10 | {<n0x7ffd2b46f500_l> left | <n0x7ffd2b46f500_r> right}} " ];
+node0x557f767dd4c0 [ shape=record, rank = 7, label= "{ 0x557f767dd4c0 | data = 66 | {<n0x557f767dd4c0_l> left | <n0x557f767dd4c0_r> right}} " ];
+
+node0x7ffd2b46f5a0:<n0x7ffd2b46f5a0_l>:s -> node0x7ffd2b46f560:n
+node0x7ffd2b46f5a0:<n0x7ffd2b46f5a0_r>:s -> node0x7ffd2b46f580:n
+node0x7ffd2b46f520:<n0x7ffd2b46f520_r>:s -> node0x557f767dd4c0:n
+node0x7ffd2b46f560:<n0x7ffd2b46f560_l>:s -> node0x7ffd2b46f500:n
+node0x7ffd2b46f580:<n0x7ffd2b46f580_l>:s -> node0x7ffd2b46f520:n
+node0x7ffd2b46f580:<n0x7ffd2b46f580_r>:s -> node0x7ffd2b46f540:n
+
+}
