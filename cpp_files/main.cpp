@@ -17,12 +17,16 @@ struct tree_t
     size_t numOfNodes;
 };
 
-//void writeNodes(node_t* node, FILE* file);
-void writeTree(tree_t* tree, const char* fileName);
+int writeTree(tree_t* tree, const char* fileName);
+void writeNodes(tree_t* tree, FILE* wFile);
 void insertElem(tree_t* tree, node_t* node, int value);
-void writePngFile();
+int writePngFile();
+void writeHtmlFile(const char* fileName, int numOfFiles);
+
+const size_t startSizeTree = 6;
 
 int main(){
+    int numberOfFiles = 0;
 
     node_t node10 = {10, NULL, NULL};
     node_t node65 = {65, NULL, NULL};
@@ -33,8 +37,9 @@ int main(){
 
     tree_t tree = {};
 
-    tree.numOfNodes = 6;
+    tree.numOfNodes = startSizeTree;
     tree.nodes = (node_t**)calloc(tree.numOfNodes, sizeof(node_t*));
+
     tree.nodes[0] = &node50;
     tree.nodes[1] = &node65;
     tree.nodes[2] = &node80;
@@ -42,10 +47,13 @@ int main(){
     tree.nodes[4] = &node70;
     tree.nodes[5] = &node10;
 
-    writeTree(&tree, "tree.dot");
+    numberOfFiles = writeTree(&tree, "tree.dot");
     insertElem(&tree, tree.nodes[0], 66);
-    writeTree(&tree, "tree.dot");
-
+    numberOfFiles = writeTree(&tree, "tree.dot");
+    writeHtmlFile("trees.html", numberOfFiles);
+    for (size_t i = 0; i <tree.numOfNodes; i++)
+        if (i >= startSizeTree) 
+            free(tree.nodes[i]);
     free(tree.nodes);
     return 0;
 }
@@ -80,7 +88,7 @@ void insertElem(tree_t* tree, node_t* node, int value){
     }
 }
 
-void writeTree(tree_t* tree, const char* fileName){
+int writeTree(tree_t* tree, const char* fileName){
     FILE* wFile = fopen(fileName, "wb");
 
     fprintf(wFile, "digraph\n{ \nrankdir=HR;\n");
@@ -93,39 +101,42 @@ void writeTree(tree_t* tree, const char* fileName){
                                                                                                     (tree->nodes)[i], (tree->nodes)[i]);
     fprintf(wFile, "\n");
 
-    for (size_t i = 0; i < tree->numOfNodes; i++){
-        if ((tree->nodes)[i]->left != NULL)
-            fprintf(wFile, "node%p:<n%p_l>:s -> node%p:n\n", (tree->nodes)[i], (tree->nodes)[i], (tree->nodes)[i]->left);
-                                                                                                         
-        if ((tree->nodes)[i]->right != NULL)
-            fprintf(wFile, "node%p:<n%p_r>:s -> node%p:n\n", (tree->nodes)[i], (tree->nodes)[i], (tree->nodes)[i]->right);
-                                                                                                          
-    }
-    fprintf(wFile, "\n");
+    writeNodes(tree, wFile);
 
     fprintf(wFile, "}\n");
 
     fclose(wFile);
-    writePngFile();
+    return writePngFile();
 }
 
-void writePngFile(){
+int writePngFile(){
     static int numOfCall = 0;
     char command[100];
     const char* startOfName = "dot tree.dot -Tpng -o png_files/tree";
     sprintf(command, "%s%d.png", startOfName, numOfCall++);
     system(command);
+
+    return numOfCall;
+}
+
+void writeHtmlFile(const char* fileName, int numOfFiles){
+    FILE* wFile = fopen(fileName, "wb");
+    fprintf(wFile, "<pre>\n");
+    for (int i = 0; i < numOfFiles; i++){
+        fprintf(wFile, "<hr>\n");
+        fprintf(wFile, "<img src=\"png_files\\tree%d.png\">\n", i);
+    }
 }
 
 
-
-void writeNodes(node_t* node, FILE* wFile, size_t rank){
-    if (!node) return;
-    fprintf(wFile, "node%p [shape=Mrecord label= \" data = %d | <n%p_l> l | <n%p_r> r \" ];\n", node, node->data, node, node);
-
-    if (node->left) {
-        fprintf(wFile, "node%p [shape=Mrecord label= \" data = %d | <n%p_l> l | <n%p_r> r \" ];\n", node->left, node->data, node->left, node->left);
-        writeNodes(node, wFile, ++rank);
+void writeNodes(tree_t* tree, FILE* wFile){
+    for (size_t i = 0; i < tree->numOfNodes; i++){
+        if ((tree->nodes)[i]->left != NULL)
+            fprintf(wFile, "node%p:<n%p_l>:s -> node%p:n\n [ color = blue; ]", (tree->nodes)[i], (tree->nodes)[i], (tree->nodes)[i]->left);
+                                                                                                         
+        if ((tree->nodes)[i]->right != NULL)
+            fprintf(wFile, "node%p:<n%p_r>:s -> node%p:n\n [ color = red; ]", (tree->nodes)[i], (tree->nodes)[i], (tree->nodes)[i]->right);
+                                                                                                          
     }
-        fprintf(wFile, "node%p [shape=Mrecord label= \" data = %d | <n%p_l> l | <n%p_r> r \" ];\n", node, node->data, node, node);
+    fprintf(wFile, "\n");
 }
